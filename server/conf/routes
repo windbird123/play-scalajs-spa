@@ -3,7 +3,8 @@
 # ~~~~
 
 # Home page
-GET        /                             controllers.Application.index()
+GET        /                             controllers.Application.index(tab = "first", query: Option[String] ?= None)
+GET        /:tab                         controllers.Application.index(tab, query: Option[String] ?= None)
 
 # Prefix must match `play.assets.urlPrefix`
 GET        /assets/*file                 controllers.Assets.at(file)

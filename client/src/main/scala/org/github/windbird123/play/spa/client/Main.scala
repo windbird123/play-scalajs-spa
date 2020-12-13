@@ -1,19 +1,31 @@
 package org.github.windbird123.play.spa.client
 
 import mhtml._
+import org.github.windbird123.play.spa.client.navigo.Navigo
 import org.querki.jquery.$
-import org.scalajs.dom.document
+import org.scalajs.dom.raw.{ HTMLElement, HTMLLinkElement }
+import org.scalajs.dom.{ document, Event }
+
+import scala.scalajs.js
 
 object Main {
   def main(args: Array[String]): Unit = {
+    val defaultTab = "first"
+    val tab        = Var(defaultTab)
 
-    def menu =
-      <div>
+    val router = new Navigo("/", false, "#")
+
+    router
+      .on(":tab", (params: js.Dictionary[Any]) => tab := params.get("tab").map(_.toString).getOrElse(defaultTab))
+      .resolve()
+
+    def menu(selectedTab: String) = {
+        <div>
             <div class="ui top attached inverted menu">
-                <div class="header item">Brand</div>
-                <a class="active item" data-tab="first">First</a>
-                <a class="item" data-tab="second">Second</a>
-                <a class="item" data-tab="third">Third</a>
+                <div class="header item" >Brand</div>
+                <div class={if (selectedTab == "first") "item active" else "item"} data-tab="first" onclick={ () => tab := "first" }>First</div>
+                <div class={if (selectedTab == "second") "item active" else "item"} data-tab="second" onclick={ () => tab := "second" }>Second</div>
+                <div class={if (selectedTab == "third") "item active" else "item"} data-tab="third" onclick={ () => tab := "third" }>Third</div>
 
                 <div class="ui dropdown item" tabindex="0">
                     Dropdown
@@ -40,28 +52,32 @@ object Main {
             </div>
 
             <div>
-                <div class="ui bottom attached active tab segment" data-tab="first">
+                <div class={ if (selectedTab == "first") "ui bottom attached tab segment active" else "ui bottom attached tab segment" } data-tab="first">
                     <h1>First</h1>
                 </div>
-                <div class="ui bottom attached tab segment" data-tab="second">
+                <div class={ if (selectedTab == "second") "ui bottom attached tab segment active" else "ui bottom attached tab segment" } data-tab="second">
                     <h1>Second</h1>
                 </div>
-                <div class="ui bottom attached tab segment" data-tab="third">
+                <div class={ if (selectedTab == "third") "ui bottom attached tab segment active" else "ui bottom attached tab segment" } data-tab="third">
                     <h1>Third</h1>
                 </div>
             </div>
+
+            <script>
+                $('.ui .dropdown').dropdown()
+            </script>
         </div>
 
+    }
+
     val body =
-      <div>
-        {menu}
+        <div>
+            {tab.map(menu)}
         </div>
 
     mount(document.body, body)
 
-    import org.github.windbird123.play.spa.client.fomantic.Dropdown._
-    import org.github.windbird123.play.spa.client.fomantic.Menu._
-    $(".menu .item").tab()
-    $(".ui .dropdown").dropdown()
+//    import org.github.windbird123.play.spa.client.fomantic.Dropdown._
+//    $(".ui .dropdown").dropdown()
   }
 }

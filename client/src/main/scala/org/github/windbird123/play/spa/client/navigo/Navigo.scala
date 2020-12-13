@@ -1,11 +1,17 @@
 package org.github.windbird123.play.spa.client.navigo
 
+import org.scalajs.dom.Event
+
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSGlobal
 
 @js.native
 @JSGlobal
-class Navigo(root: String, userHash: Boolean, hash: String) extends js.Any {
-  def on(path: String, fn: js.Function0[Unit]): Navigo = js.native
-  def resolve(): Unit                                  = js.native
+class Navigo(root: String, useHash: Boolean, hash: String) extends js.Any {
+  def on(path: String, fn: js.Function0[Unit]): Navigo        = js.native
+  def on(path: String, fn: js.Function1[js.Dictionary[Any], Unit]): Navigo = js.native
+  def resolve(): Unit                                         = js.native
+
+  def navigate(path: String): Unit                          = js.native
+  def navigate(path: String, isAbsolutePath: Boolean): Unit = js.native
 }
