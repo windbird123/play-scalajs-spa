@@ -10,21 +10,24 @@ import scala.xml.Node
 
 object Main {
   def main(args: Array[String]): Unit = {
-    val defaultTab = "first"
-    val tab        = Var(defaultTab)
+    val defaultTab  = "first"
+    val selectedTab = Var(defaultTab)
 
     val router = new Navigo("/", false, "#")
 
     router
-      .on(":tab", (params: js.Dictionary[Any]) => tab := params.get("tab").map(_.toString).getOrElse(defaultTab))
+      .on(
+        ":tab",
+        (params: js.Dictionary[Any]) => selectedTab := params.get("tab").map(_.toString).getOrElse(defaultTab)
+      )
       .resolve()
 
-    def createMenuItem(name: String) = tab.map { tabName =>
+    def createMenuItem(name: String) = selectedTab.map { tabName =>
       val prop = if (tabName == name) "item active" else "item"
       <div class={prop} data-tab={name} onclick={() => router.navigate({ name })}>{name}</div>
     }
 
-    def createTabSegment(name: String)(node: Node) = tab.map { tabName =>
+    def createTabSegment(name: String)(node: Node) = selectedTab.map { tabName =>
       val prop = if (tabName == name) "ui bottom attached tab segment active" else "ui bottom attached tab segment"
       <div class={prop} data-tab={name}> {node} </div>
     }
