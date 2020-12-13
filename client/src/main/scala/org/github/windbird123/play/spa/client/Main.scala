@@ -63,9 +63,9 @@ object Main {
                 </div>
             </div>
 
-            <script>
-                $('.ui .dropdown').dropdown()
-            </script>
+            <div id="test"></div>
+
+
         </div>
 
     }
@@ -77,7 +77,17 @@ object Main {
 
     mount(document.body, body)
 
-//    import org.github.windbird123.play.spa.client.fomantic.Dropdown._
-//    $(".ui .dropdown").dropdown()
+
+      val sc = {
+        tab.map { _ =>
+            import org.github.windbird123.play.spa.client.fomantic.Dropdown._
+            $(".ui .dropdown").dropdown()
+            <div></div>
+        }
+      }
+
+      val test = document.getElementById("test")
+    mount(test, sc)
+
   }
 }
