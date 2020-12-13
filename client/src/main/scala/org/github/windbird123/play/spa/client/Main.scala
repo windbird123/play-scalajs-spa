@@ -19,13 +19,25 @@ object Main {
       .on(":tab", (params: js.Dictionary[Any]) => tab := params.get("tab").map(_.toString).getOrElse(defaultTab))
       .resolve()
 
-    def menu(selectedTab: String) = {
+    def menu() =
         <div>
             <div class="ui top attached inverted menu">
                 <div class="header item" >Brand</div>
-                <div class={if (selectedTab == "first") "item active" else "item"} data-tab="first" onclick={ () => tab := "first" }>First</div>
-                <div class={if (selectedTab == "second") "item active" else "item"} data-tab="second" onclick={ () => tab := "second" }>Second</div>
-                <div class={if (selectedTab == "third") "item active" else "item"} data-tab="third" onclick={ () => tab := "third" }>Third</div>
+                {
+                tab.map { tabName =>
+                    val prop = if (tabName == "first") "item active" else "item"
+                    <div class={prop} data-tab="first" onclick={() => router.navigate("first")}>First</div>
+                }
+
+                }
+
+                {
+                tab.map { tabName =>
+                    val prop = if (tabName == "second") "item active" else "item"
+                    <div class={prop} data-tab="second" onclick={() => router.navigate("second")}>Second</div>
+                }
+
+                }
 
                 <div class="ui dropdown item" tabindex="0">
                     Dropdown
@@ -52,42 +64,39 @@ object Main {
             </div>
 
             <div>
-                <div class={ if (selectedTab == "first") "ui bottom attached tab segment active" else "ui bottom attached tab segment" } data-tab="first">
-                    <h1>First</h1>
-                </div>
-                <div class={ if (selectedTab == "second") "ui bottom attached tab segment active" else "ui bottom attached tab segment" } data-tab="second">
-                    <h1>Second</h1>
-                </div>
-                <div class={ if (selectedTab == "third") "ui bottom attached tab segment active" else "ui bottom attached tab segment" } data-tab="third">
-                    <h1>Third</h1>
-                </div>
+                {
+                tab.map { tabName =>
+                    val prop =
+                        if (tabName == "first") "ui bottom attached tab segment active" else "ui bottom attached tab segment"
+                    <div class={prop} data-tab="first">
+                        <h1>First</h1>
+                    </div>
+                }
+                }
+
+
+                {
+                tab.map { tabName =>
+                    val prop =
+                        if (tabName == "second") "ui bottom attached tab segment active" else "ui bottom attached tab segment"
+                    <div class={prop} data-tab="second">
+                        <h1>Second</h1>
+                    </div>
+                }
+                }
+
             </div>
-
-            <div id="test"></div>
-
-
         </div>
 
-    }
-
     val body =
-        <div>
-            {tab.map(menu)}
+      <div>
+            {menu()}
         </div>
 
     mount(document.body, body)
 
-
-      val sc = {
-        tab.map { _ =>
-            import org.github.windbird123.play.spa.client.fomantic.Dropdown._
-            $(".ui .dropdown").dropdown()
-            <div></div>
-        }
-      }
-
-      val test = document.getElementById("test")
-    mount(test, sc)
-
+    // 주의: 아래 dropdown() 대상이 되는 $(".ui .dropdown") 이 Var 값(tab) 에 의해 다시 그려지지 않도록 해야 한다.
+    import org.github.windbird123.play.spa.client.fomantic.Dropdown._
+    $(".ui .dropdown").dropdown()
   }
 }
