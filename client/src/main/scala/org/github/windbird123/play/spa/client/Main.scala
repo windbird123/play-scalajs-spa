@@ -3,10 +3,10 @@ package org.github.windbird123.play.spa.client
 import mhtml._
 import org.github.windbird123.play.spa.client.navigo.Navigo
 import org.querki.jquery.$
-import org.scalajs.dom.raw.{ HTMLElement, HTMLLinkElement }
-import org.scalajs.dom.{ document, Event }
+import org.scalajs.dom.document
 
 import scala.scalajs.js
+import scala.xml.Node
 
 object Main {
   def main(args: Array[String]): Unit = {
@@ -19,25 +19,23 @@ object Main {
       .on(":tab", (params: js.Dictionary[Any]) => tab := params.get("tab").map(_.toString).getOrElse(defaultTab))
       .resolve()
 
+    def createMenuItem(name: String) = tab.map { tabName =>
+      val prop = if (tabName == name) "item active" else "item"
+      <div class={prop} data-tab={name} onclick={() => router.navigate({ name })}>{name}</div>
+    }
+
+    def createTabSegment(name: String)(node: Node) = tab.map { tabName =>
+      val prop = if (tabName == name) "ui bottom attached tab segment active" else "ui bottom attached tab segment"
+      <div class={prop} data-tab={name}> {node} </div>
+    }
+
     def menu() =
-        <div>
+      <div>
             <div class="ui top attached inverted menu">
                 <div class="header item" >Brand</div>
-                {
-                tab.map { tabName =>
-                    val prop = if (tabName == "first") "item active" else "item"
-                    <div class={prop} data-tab="first" onclick={() => router.navigate("first")}>First</div>
-                }
-
-                }
-
-                {
-                tab.map { tabName =>
-                    val prop = if (tabName == "second") "item active" else "item"
-                    <div class={prop} data-tab="second" onclick={() => router.navigate("second")}>Second</div>
-                }
-
-                }
+                {createMenuItem("first")}
+                {createMenuItem("second")}
+                {createMenuItem("third")}
 
                 <div class="ui dropdown item" tabindex="0">
                     Dropdown
@@ -64,27 +62,9 @@ object Main {
             </div>
 
             <div>
-                {
-                tab.map { tabName =>
-                    val prop =
-                        if (tabName == "first") "ui bottom attached tab segment active" else "ui bottom attached tab segment"
-                    <div class={prop} data-tab="first">
-                        <h1>First</h1>
-                    </div>
-                }
-                }
-
-
-                {
-                tab.map { tabName =>
-                    val prop =
-                        if (tabName == "second") "ui bottom attached tab segment active" else "ui bottom attached tab segment"
-                    <div class={prop} data-tab="second">
-                        <h1>Second</h1>
-                    </div>
-                }
-                }
-
+                {createTabSegment("first")(<div>{First.content}</div>)}
+                {createTabSegment("second")(<div>Second</div>)}
+                {createTabSegment("third")(<div>Third</div>)}
             </div>
         </div>
 
@@ -96,6 +76,7 @@ object Main {
     mount(document.body, body)
 
     // 주의: 아래 dropdown() 대상이 되는 $(".ui .dropdown") 이 Var 값(tab) 에 의해 다시 그려지지 않도록 해야 한다.
+    // 다시 그려질 경우 dropdown 이 동작 안함
     import org.github.windbird123.play.spa.client.fomantic.Dropdown._
     $(".ui .dropdown").dropdown()
   }
