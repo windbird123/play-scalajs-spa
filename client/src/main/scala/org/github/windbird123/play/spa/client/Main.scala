@@ -9,21 +9,19 @@ import scala.scalajs.js
 import scala.xml.Node
 
 object Main {
-  val defaultTab  = "first"
-  val selectedTab = Var(defaultTab)
-  val queryPart       = Var("")
+  val defaultTab: String       = "first"
+  val selectedTab: Var[String] = Var(defaultTab)
+  val queryPart: Var[String]   = Var("")
 
   def main(args: Array[String]): Unit = {
-
     val router = new Navigo("/", false, "#")
 
     router
       .on(
         ":tab",
         (params: js.Dictionary[Any], q: String) => {
-            selectedTab := params.get("tab").map(_.toString).getOrElse(defaultTab)
-            println(params.get("tab"))
-            queryPart := q
+          selectedTab := params.get("tab").map(_.toString).getOrElse(defaultTab)
+          queryPart := q
         }
       )
       .resolve()
