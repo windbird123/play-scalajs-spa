@@ -84,9 +84,13 @@ object Main {
 
     // 주의: 아래 dropdown() 대상이 되는 $(".ui .dropdown") 이 Var 값(tab) 에 의해 다시 그려지지 않도록 해야 한다.
     // 다시 그려질 경우 dropdown 이 동작 안함
-    // facade 를 사용할 수 있지만, <script> tag 로 js code 를 직접 넣어도 된다.
-    // <div><script>$(".ui .dropdown").dropdown()</script></div>
+
     import org.github.windbird123.play.spa.client.fomantic.Dropdown._
     $(".ui .dropdown").dropdown()
+
+    // 위와 같이 facade 를 만들어도 되지만, dynamic types 를 사용하는 방법도 있다.
+    //     https://www.scala-js.org/doc/interoperability/facade-types.html#calling-javascript-from-scalajs-with-dynamic-types
+//    val formanticTab = js.Dynamic.newInstance(js.Dynamic.global.$)(".ui .dropdown")
+//    formanticTab.dropdown()
   }
 }
