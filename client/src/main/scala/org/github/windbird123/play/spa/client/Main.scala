@@ -16,6 +16,8 @@ object Main {
   def main(args: Array[String]): Unit = {
     val router = new Navigo("/", false, "#")
 
+    // 위의 facade 이용 대신에 아래와 같이 하는 것도 가능 !!!
+    // val router = js.Dynamic.newInstance(js.Dynamic.global.Navigo)("/", false, "#")
     router
       .on(
         ":tab",
@@ -28,7 +30,7 @@ object Main {
 
     def createMenuItem(name: String) = selectedTab.map { tabName =>
       val prop = if (tabName == name) "item active" else "item"
-      <div class={prop} data-tab={name} onclick={() => router.navigate({ name })}>{name}</div>
+      <div class={prop} data-tab={name} onclick={() => router.navigate({ name }); ()}>{name}</div>
     }
 
     def createTabSegment(name: String)(node: Node) = selectedTab.map { tabName =>
